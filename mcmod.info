@@ -1,0 +1,16 @@
+[
+{
+  "modid": "cactusmod",
+  "name": "Cactus Mod",
+  "description": "RGB String and Cant Place Cactus Wrong",
+  "version": "1.0.0",
+  "mcversion": "1.8.9",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["UselessDuck"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+] 

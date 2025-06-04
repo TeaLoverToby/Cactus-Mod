@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = "https://repo.spongepowered.org/maven" }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "1.0.0"
+group = "UselessDuck.CactusMod"
+archivesBaseName = "CactusMod"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_20"
+    makeObfSourceJar = false
+    clientJvmArgs += [
+            "-Dmixin.debug.verbose=true",
+            "-Dmixin.debug.export=true",
+            "-Dmixin.dumpTargetOnFailure=true",
+            "-Xmx4096m", "-Xms4096m"
+    ]
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url = "https://repo.spongepowered.org/maven" }
+    maven { url = "https://jitpack.io/" }
+}
+
+dependencies {
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+// Ensure mcmod.info is expanded and included, and all resources are copied
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
