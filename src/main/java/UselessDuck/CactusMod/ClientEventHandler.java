@@ -196,6 +196,16 @@ public class ClientEventHandler {
     private void checkForNewStrings(Minecraft mc) {
         BlockPos playerPos = mc.thePlayer.getPosition();
         World world = mc.theWorld;
+
+        cachedStringBlocks.entrySet().removeIf(entry -> {
+            BlockPos pos = entry.getKey();
+            try {
+                Block block = world.getBlockState(pos).getBlock();
+                return !(block == Blocks.tripwire || Block.getIdFromBlock(block) == 132);
+            } catch (Exception e) {
+                return true;
+            }
+        });
         
         for (int x = -5; x <= 5; x++) {
             for (int y = -5; y <= 5; y++) {
@@ -286,12 +296,22 @@ public class ClientEventHandler {
 
     private void updateStringCache(Minecraft mc) {
         BlockPos playerPos = mc.thePlayer.getPosition();
-        cachedStringBlocks.entrySet().removeIf(entry -> {
-            double distSq = entry.getKey().distanceSq(playerPos);
-            return distSq > MAX_DISTANCE_SQ;
-        });
-        
         World world = mc.theWorld;
+
+        cachedStringBlocks.entrySet().removeIf(entry -> {
+            BlockPos pos = entry.getKey();
+            double distSq = pos.distanceSq(playerPos);
+            if (distSq > MAX_DISTANCE_SQ) {
+                return true;
+            }
+
+            try {
+                Block block = world.getBlockState(pos).getBlock();
+                return !(block == Blocks.tripwire || Block.getIdFromBlock(block) == 132);
+            } catch (Exception e) {
+                return true;
+            }
+        });
         
         for (int x = -REDUCED_SCAN_DISTANCE; x <= REDUCED_SCAN_DISTANCE; x++) {
             for (int y = -REDUCED_SCAN_DISTANCE; y <= REDUCED_SCAN_DISTANCE; y++) {
@@ -329,6 +349,9 @@ public class ClientEventHandler {
     
     private void cleanup(Minecraft mc) {
         visibleStrings.clear();
+
+        renderList.clear();
+        renderList.addAll(cachedStringBlocks.values());
         
         if (renderList.isEmpty()) {
             return;
