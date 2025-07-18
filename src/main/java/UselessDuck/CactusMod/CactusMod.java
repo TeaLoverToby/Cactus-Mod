@@ -18,6 +18,7 @@ public class CactusMod {
         ModConfig.init(event.getSuggestedConfigurationFile());
         Keybinds.register();
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        MinecraftForge.EVENT_BUS.register(new TeleportSafetyListener());
         ClientCommandHandler.instance.registerCommand(new ShowStringCommand());
     }
 }
